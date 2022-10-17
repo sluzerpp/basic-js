@@ -41,7 +41,6 @@ function minesweeper(matrix) {
         if (matrix[i+1][j]) row[j]++
         if (matrix[i+1][j+1]) row[j]++
       }
-      
     }
     newMatrix.push(row)
   }
