@@ -13,9 +13,11 @@ const { NotImplementedError } = require('../extensions/index.js');
  */
 function getSeason(date) {
   if (date == null) return "Unable to determine the time of year!"
-  if (typeof date != "object") throw new Error("Invalid date!");
-  if (!(date instanceof Date)) throw new Error("Invalid date!");
-  if (typeof date.getTimezoneOffset == undefined) throw new Error("Invalid date!");
+  try {
+    date.toTimeString()
+  } catch (err) {
+    throw new Error("Invalid date!")
+  }
   let month = date.getMonth()
   if ([11,0,1].includes(month)) return "winter"
   if ([2,3,4].includes(month)) return "spring"

@@ -13,44 +13,74 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
+// function transform(arrr) {
+//   if (!Array.isArray(arrr)) throw new Error("'arr' parameter must be an instance of the Array!")
+//   let arr = []
+//   arrr.forEach((el,i) => {
+//     if (typeof el == "number") {
+//       if ((arrr[i-1] != "--discard-next" || arrr[i-1] != "--double-next")  
+//       && (arrr[i+1] != "--discard-prev" || arrr[i+1] != "--double-prev")) {
+//         arr.push(el)
+//       };
+
+//       if (arrr[i-1] == "--double-next") {
+//         if (arrr[i+1] == "--discard-prev") {
+//           arr.push(arrr[el])
+//           return;
+//         }
+//         if(arrr[i+1] == "--double-prev") {
+//           arr.push(el,el)
+//           return;
+//         }
+//         arr.push(el,el)
+//       }
+//       if (arrr[i-1] == "--discard-next") {
+//         if(arrr[i+1] == "--double-prev") {
+//           return;
+//         }
+//         arr.pop()
+//         return;
+//       }
+//     }
+//     if (typeof el != "number" && !["--discard-next","--double-prev","--double-next","--discard-prev"].includes(el)) {
+//       arr.push(el)
+//     }
+//   })
+//   return arr;
+// }
+
 function transform(arrr) {
   if (!Array.isArray(arrr)) throw new Error("'arr' parameter must be an instance of the Array!")
-  let arr = arrr.slice(0)
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] == "--double-next") {
-      if (arr[i+1] != null) {
-        arr[i] = arr[i+1]
-      } else {
-        arr.splice(i,1)
+  let arr = []
+  for(let i=0;i < arrr.length;i++) {
+    if (typeof arrr[i] == "number") {
+      if ((arrr[i-1] != "--discard-next" && arrr[i-1] != "--double-next")  
+      && (arrr[i+1] != "--discard-prev" && arrr[i+1] != "--double-prev")) {
+        arr.push(arrr[i])
+      };
+
+      if (arrr[i-1] == "--double-next") {
+        if (arrr[i+1] == "--discard-prev") {
+          arr.push(arrr[i])
+          continue;
+        }
+        if (arrr[i+1] == "--double-prev") {
+          arr.push(arrr[i],arrr[i],arrr[i])
+          continue;
+        }
+        arr.push(arrr[i],arrr[i])
+        continue;
       }
-      return transform(arr)
-    }
-    if (arr[i] == "--double-prev") {
-      if (arr[i-1] != null) {
-        arr[i] = arr[i-1]
-      } else {
-        arr.splice(i,1)
+      if (arrr[i-1] == "--discard-next") {
+        continue;
       }
-      return transform(arr)
+      continue;
     }
-    if (arr[i] == "--discard-next") {
-      if (arr[i+1] != null) {
-        arr.splice(i,2)
-      } else {
-        arr.splice(i,1)
-      }
-      return transform(arr)
+    if (typeof arrr[i] != "number" && !["--discard-next","--double-prev","--double-next","--discard-prev"].includes(arrr[i])) {
+      arr.push(arrr[i])
     }
-    if (arr[i] == "--discard-prev") {
-      if (arr[i-1] != null) {
-        arr.splice(i-1,2)
-      } else {
-        arr.splice(i,1)
-      }
-      return transform(arr)
-    }
-   }
-   return arr
+  }
+  return arr;
 }
 
 module.exports = {
